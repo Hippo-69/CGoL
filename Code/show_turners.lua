@@ -11,10 +11,12 @@ local singleadd,doubleadd
 g.autoupdate(true)
 g.setoption("savexrle", 0)
 
-if doublehist then
+local function iniadds()
+  if doublehist then
     singleadd,doubleadd=1,2
-else
+  else
     singleadd,doubleadd=9,4
+  end
 end
 
 local function inttostring(num)
@@ -35,12 +37,14 @@ local function locate_start_glider(rlestr)
 end
 
 local function double(x,y)
+    --g.show(x.."x"..y..":"..g.getcell(x,y).."+"..doubleadd)
     g.setcell(x,y,g.getcell(x,y)+doubleadd)
 end
 
 local function single(patt)
     local step = 2+(#patt%2)
     for i=1,#patt-1,step do
+	--g.show(patt[i].."x"..patt[i+1]..":"..g.getcell(patt[i],patt[i+1]).."+"..singleadd)
         g.setcell(patt[i],patt[i+1],g.getcell(patt[i],patt[i+1])+singleadd)
     end
 end
@@ -131,7 +135,7 @@ local function process_txtfile(basefilename,dir)
         end
         if prevcriteria1~=criteria1 then
             if prevcriteria1~=99999 then
-                putrlestr(-100,y,best1rlestr,best1gl)
+                putrlestr(-5*xstep/2,y,best1rlestr,best1gl)
             end
             prevcriteria1=criteria1
             x,y=-xstep,y+ystep
@@ -147,7 +151,7 @@ local function process_txtfile(basefilename,dir)
         end
     end
     if prevcriteria1~=99999 then
-        putrlestr(-100,y,best1rlestr,best1gl)
+        putrlestr(-5*xstep/2,y,best1rlestr,best1gl)
     end
     i:close()
     g.save(data_file_dir .. basefilename .. (doublehist and "DH" or "") .. ".mc","mc")
@@ -182,10 +186,12 @@ local function glider_defined()
 end
 
 doublehist = false
+iniadds()
 --turners()
 --splitters_2()
-glider_defined()
+--glider_defined()
 doublehist = true
+iniadds()
 --turners()
 --splitters_2()
 glider_defined()
